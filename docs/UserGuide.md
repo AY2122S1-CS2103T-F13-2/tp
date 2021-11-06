@@ -684,7 +684,6 @@ Action | Format, Examples
 **Remark** | `remark INDEX re/REMARK`
 **View elderly details** | `viewDetails INDEX`<br> <br> e.g., `viewDetails 2`
 **View all elderly** | `viewElderly`
-<br />
 
 ### 6.2 Task
 
@@ -698,7 +697,6 @@ Action | Format, Examples
 **Remind** | `remind`
 **View Schedule** | `viewSchedule DATE` <br> e.g., `viewSchedule 2022-02-14`
 **View all tasks** | `viewTasks`
-<br />
 
 ### 6.3 Miscellaneous
 
