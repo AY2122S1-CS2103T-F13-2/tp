@@ -392,7 +392,7 @@ The implementation of `DeleteNokCommand` is highly similar to that of `DeleteCom
 
 Given below is an example usage scenario and how the delete Nok mechanism behaves at each step. The example command is `deleteNok 1`.
 
-Step 1. The user and executes `deleteNok 1` command to delete the NoK details of the first elderly in the elderly list. This prompts the `LogicManager` to start its execution by calling its `execute()` command.
+Step 1. The user executes `deleteNok 1` command to delete the NoK details of the first elderly in the elderly list. This prompts the `LogicManager` to start its execution by calling its `execute()` command.
 
 Step 2. `LogicManager` calls the `NurseyBookParser` to parse the command.
 
@@ -490,7 +490,7 @@ The following activity diagram summarizes what happens in the `MainWindow` class
 ### ViewSchedule Feature
 
 #### Implications on representation of `Task` objects
-The `viewSchedule` command introduced a need for certain Tasks, specifically future occurrences of recurring tasks, to be visible to the user only when this command is called. Such temporary tasks need to be not visible once the next command is entered.
+The `viewSchedule` command introduced a need for certain tasks, specifically future occurrences of recurring tasks, to be visible to the user only when this command is called. Such temporary tasks need to be not visible once the next command is entered.
 
 To achieve this functionality, `Task` objects had to be refactored into`RealTask` and `GhostTask` objects as shown in the diagram below. 
 
@@ -498,12 +498,12 @@ To achieve this functionality, `Task` objects had to be refactored into`RealTask
 DIAGRAM OF REAL AND GHOST TASK
 
 RealTasks represent concrete tasks, which are either non-recurring tasks, or the current occurrence of recurring tasks.
-GhostTasks are temporary tasks that exist for the sole purpose of allowing the user to preview future occurrences of recurring tasks.
+GhostTasks are temporary tasks that exist for the purpose of allowing the user to preview future occurrences of recurring tasks.
 By default, `viewTasks` will only show RealTasks.
 
 
 Since `UniqueTaskList` contains `Task` objects, it can be either `GhostTask` or `RealTask` objects. Naturally, this implies that calling two commands that both have dependencies on GhostTask objects would cause conflicts, as earlier created GhostTasks
-would still persist in the task list. This necessitates a cleanup of `GhostTask` objects between execution of each command. Such deletion of GhostTasks in the `model` is achieved just prior to the execution of each command in `LogicManager`, by the `deleteGhostTasks()` method.
+would still persist in the task list. This necessitates a cleanup of `GhostTask` objects between execution of each command. Such deletion of old GhostTasks in the `model` is achieved just prior to the execution of each new command in `LogicManager`, via the `deleteGhostTasks()` method.
 
 Code Snippet of the `execute(String commandText)` method in `LogicManager`:
 ```
@@ -513,18 +513,29 @@ public CommandResult execute(String commandText) throws CommandException, ParseE
 
     //deletes all previous ghost tasks from the model as they are no longer relevant
     model.deleteGhostTasks();
-    
+
     //parsing and execution of command
     CommandResult commandResult;
     Command command = nurseyBookParser.parseCommand(commandText);
     commandResult = command.execute(model);
-
 ```
 
 
 #### Implementation of ViewSchedule
 
-As NurseyBook has to support the display of two different lists (contacts vs task), each `CommandResult` object will now store the information which list should be displayed to the user.
+`ViewScheduleCommand` leverages on this ability to create GhostTasks. The other unique aspect in the implementation of this feature, is how the program figures out which GhostTasks to create and show to the user upon execution of this command.
+When a `ViewScheduleCommand` is executed with a given `keyDate`, where `keyDate` refers to the date on which the user wants to view schedule, `addPossibleGhostTasksWithMatchingDate(keyDate)` is responsible for this addition of relevant GhostTasks.
+Given below is an activity diagram that summarizes the sequence of actions which guides how this method functions.
+
+
+
+
+
+
+The sequence diagram below captures the general process by which a `viewSchedule` operation works.
+The call to `deleteGhostTasks()` is also captured in this diagram.
+Since the remaining general mechanisms by which the operation occurs is similar to other previously elaborated commands, a step-by-step elaboration is not given for the diagram.
+
 
 
 --------------------------------------------------------------------------------------------------------------------

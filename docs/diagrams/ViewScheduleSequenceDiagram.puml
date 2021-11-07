@@ -1,0 +1,81 @@
+@startuml
+!include style.puml
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":NurseyBookParser" as NurseyBookParser LOGIC_COLOR
+participant ":ViewScheduleCommandParser" as ViewScheduleCommandParser LOGIC_COLOR
+participant "p:DescriptionContainsKeywordPredicate" as DescriptionContainsKeywordPredicate LOGIC_COLOR
+participant "f:ViewScheduleCommand" as ViewScheduleCommand LOGIC_COLOR
+participant ":CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("viewSchedule 2021-11-07")
+activate LogicManager
+
+LogicManager -> Model : deleteGhostTasks()
+activate Model
+
+Model --> LogicManager
+deactivate Model
+
+LogicManager -> NurseyBookParser : parseCommand("viewSchedule 2021-11-07")
+activate NurseyBookParser
+
+create ViewScheduleCommandParser
+NurseyBookParser -> ViewScheduleCommandParser
+activate ViewScheduleCommandParser
+
+ViewScheduleCommandParser --> NurseyBookParser
+deactivate ViewScheduleCommandParser
+
+NurseyBookParser -> ViewScheduleCommandParser : parse("Pfizer")
+activate ViewScheduleCommandParser
+
+create DescriptionContainsKeywordPredicate
+ViewScheduleCommandParser -> DescriptionContainsKeywordPredicate
+activate DescriptionContainsKeywordPredicate
+
+DescriptionContainsKeywordPredicate --> ViewScheduleCommandParser : p
+deactivate DescriptionContainsKeywordPredicate
+
+create ViewScheduleCommand
+ViewScheduleCommandParser -> ViewScheduleCommand : ViewScheduleCommand(p)
+activate ViewScheduleCommand
+
+ViewScheduleCommand --> ViewScheduleCommandParser : f
+deactivate ViewScheduleCommand
+
+ViewScheduleCommandParser --> NurseyBookParser : f
+deactivate ViewScheduleCommandParser
+ViewScheduleCommandParser -[hidden]-> NurseyBookParser
+destroy ViewScheduleCommandParser
+
+NurseyBookParser --> LogicManager : f
+deactivate NurseyBookParser
+
+LogicManager -> ViewScheduleCommand : execute()
+activate ViewScheduleCommand
+
+ViewScheduleCommand -> Model : updateFilteredTaskList(p)
+activate Model
+
+Model --> ViewScheduleCommand
+deactivate Model
+
+create CommandResult
+ViewScheduleCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> ViewScheduleCommand
+deactivate CommandResult
+
+ViewScheduleCommand --> LogicManager : result
+deactivate ViewScheduleCommand
+
+[<-- LogicManager
+@enduml
