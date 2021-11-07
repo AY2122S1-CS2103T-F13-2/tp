@@ -487,6 +487,46 @@ The following activity diagram summarizes what happens in the `MainWindow` class
   * Cons: With two different lists (that contain different objects) displayed side by side, the display might seem cluttered and hard to read from. It negatively impacts the user experience.
 
 
+### ViewSchedule Feature
+
+#### Implications on representation of `Task` objects
+The `viewSchedule` command introduced a need for certain Tasks, specifically future occurrences of recurring tasks, to be visible to the user only when this command is called. Such temporary tasks need to be not visible once the next command is entered.
+
+To achieve this functionality, `Task` objects had to be refactored into`RealTask` and `GhostTask` objects as shown in the diagram below. 
+
+
+DIAGRAM OF REAL AND GHOST TASK
+
+RealTasks represent concrete tasks, which are either non-recurring tasks, or the current occurrence of recurring tasks.
+GhostTasks are temporary tasks that exist for the sole purpose of allowing the user to preview future occurrences of recurring tasks.
+By default, `viewTasks` will only show RealTasks.
+
+
+Since `UniqueTaskList` contains `Task` objects, it can be either `GhostTask` or `RealTask` objects. Naturally, this implies that calling two commands that both have dependencies on GhostTask objects would cause conflicts, as earlier created GhostTasks
+would still persist in the task list. This necessitates a cleanup of `GhostTask` objects between execution of each command. Such deletion of GhostTasks in the `model` is achieved just prior to the execution of each command in `LogicManager`, by the `deleteGhostTasks()` method.
+
+Code Snippet of the `execute(String commandText)` method in `LogicManager`:
+```
+@Override
+public CommandResult execute(String commandText) throws CommandException, ParseException {
+    logger.info("----------------[USER COMMAND][" + commandText + "]");
+
+    //deletes all previous ghost tasks from the model as they are no longer relevant
+    model.deleteGhostTasks();
+    
+    //parsing and execution of command
+    CommandResult commandResult;
+    Command command = nurseyBookParser.parseCommand(commandText);
+    commandResult = command.execute(model);
+
+```
+
+
+#### Implementation of ViewSchedule
+
+As NurseyBook has to support the display of two different lists (contacts vs task), each `CommandResult` object will now store the information which list should be displayed to the user.
+
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Documentation, logging, testing, configuration, dev-ops**
