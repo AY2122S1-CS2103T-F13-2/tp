@@ -9,7 +9,7 @@ title: User Guide
 --------------------------------------------------------------------------------------------------------------------
 ## 1. Introduction
 
-NurseyBook is a **desktop app made for nurses in nursing homes to aid them in managing contacts and tasks in their busy lives. It is optimized for use via a Command Line Interface** (CLI) while still **having the benefits of a Graphical User Interface** (GUI). If you can type fast, NurseyBook can manage your contacts & tasks done faster than traditional GUI apps! :smile:
+NurseyBook is a **desktop app made for nurses in nursing homes to aid them in managing contacts and tasks in their busy lives. It is optimized for use via a Command Line Interface** (CLI) while still **having the benefits of a Graphical User Interface** (GUI). If you can type fast, NurseyBook can help you manage your contacts & tasks faster than traditional GUI apps! :smile:
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ NurseyBook is a **desktop app made for nurses in nursing homes to aid them in ma
 
    * **`exit`** : Exits the app.
 
-Refer to the [4. Features](#4-features) below for details of each command.
+Refer to the [4. Features](#4-features) below for in-depth details of all available commands.
 
 
 --------------------------------------------------------------------------------------------------------------------
@@ -539,7 +539,8 @@ Examples:
 * Marks the task at the specified `INDEX` as done.
 * The index refers to the index number shown in the displayed task list.
 * The index **must be a positive integer** 1, 2, 3, …​
-* After marking an overdue task is completed, the overdue tag will no longer be displayed.
+* Tasks with dates that have passed already will be marked with an overdue tag.
+* After marking an overdue task as completed, the overdue tag will no longer be displayed.
 
 </div>
 
@@ -611,7 +612,7 @@ Reverses the previous undo command executed on the NurseyBook.
 
 Format: `redo`
 
-* If there are no undo commands executed previously, the redo command will fail and an error message will be shown.
+* If there are no undoable commands executed previously, the redo command will fail and an error message will be shown.
 
 Example:
 * `deleteElderly 1` followed by `undo` causes the `deleteElderly 1` command to be undone and no elderly is deleted from the NurseyBook.
@@ -648,7 +649,7 @@ are also welcome to update data directly by editing that data file.
 ## 6. FAQ
 
 **Q**: How do I transfer my data to another Computer?<br>
-**A**: Install the app in the other computer and overwrite the empty data file NurseyBook creates with the file, with the file
+**A**: Install the app in the other computer and overwrite the empty data file NurseyBook creates, with the file 
 that contains the data of your previous NurseyBook home folder.
 
 **Q**: How do I save my data?<br>
