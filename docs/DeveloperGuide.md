@@ -546,7 +546,8 @@ Code snippet of the `execute(String commandText)` method in `LogicManager`:
 public CommandResult execute(String commandText) throws CommandException, ParseException {
     logger.info("----------------[USER COMMAND][" + commandText + "]");
     
-    //deletes all previous ghost tasks from the model as they are no longer relevant
+    //deletes all previous ghost tasks from the model as
+    //they are no longer relevant
     model.deleteGhostTasks();
     
     //parsing and execution of command
